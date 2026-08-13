@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Stuart Motos Oficina Mecânica - catálogo, veículos, serviços, horários e gestão integrada ao Supabase." />
+  <meta name="theme-color" content="#0b0c0d" />
+  <title>Stuart Motos | Oficina Mecânica</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="loading-screen" id="loadingScreen">
+    <img src="./assets/logo-stuart-motos.png" alt="Stuart Motos">
+    <strong>STUART MOTOS</strong>
+    <span>Conectando ao sistema...</span>
+  </div>
+
+  <div class="setup-screen hidden" id="setupScreen">
+    <div class="setup-card">
+      <img src="./assets/logo-stuart-motos.png" alt="Stuart Motos">
+      <span class="eyebrow">CONFIGURAÇÃO NECESSÁRIA</span>
+      <h1>Conecte o site ao Supabase</h1>
+      <p>O site já está pronto para banco de dados e autenticação. Preencha <code>config.js</code> com a Project URL e a Publishable Key do seu projeto Supabase.</p>
+      <div class="setup-code">
+        <span>Arquivo:</span>
+        <strong>config.js</strong>
+      </div>
+      <p class="small-copy">Nunca coloque a Secret Key, service_role ou senha do banco nesse arquivo.</p>
+    </div>
+  </div>
+
+  <div class="entry-screen hidden" id="entryScreen">
+    <div class="entry-bg">
+      <img src="./assets/mascote-duplo-biceps.png" alt="">
+    </div>
+
+    <div class="entry-card">
+      <img class="entry-logo" src="./assets/logo-stuart-motos.png" alt="Stuart Motos">
+      <span class="eyebrow">STUART MOTOS • OFICINA MECÂNICA</span>
+      <h1>Escolha como entrar</h1>
+      <p>Visitantes podem consultar horários, produtos e motos. O dono entra com email e senha para gerenciar a oficina.</p>
+
+      <div class="entry-buttons">
+        <button class="primary large" id="visitorBtn">Entrar como visitante</button>
+        <button class="secondary large" id="showOwnerLoginBtn">Entrar como dono</button>
+      </div>
+
+      <form class="owner-login hidden" id="ownerLoginForm">
+        <label>Email do dono
+          <input type="email" name="email" autocomplete="username" required placeholder="dono@stuartmotos.com.br">
+        </label>
+        <label>Senha
+          <input type="password" name="password" autocomplete="current-password" required placeholder="Sua senha">
+        </label>
+        <button class="primary block" type="submit">Acessar painel administrativo</button>
+        <span class="form-message" id="loginMessage"></span>
+      </form>
+    </div>
+  </div>
+
+  <div class="app-shell hidden" id="appShell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <img src="./assets/logo-stuart-motos.png" alt="Stuart Motos">
+        <div>
+          <strong>STUART MOTOS</strong>
+          <span>Oficina Mecânica</span>
+        </div>
+      </div>
+
+      <div class="role-badge" id="roleBadge">VISITANTE</div>
+
+      <nav class="nav">
+        <button class="nav-link active" data-section="inicio">🏁 <span>Início</span></button>
+        <button class="nav-link" data-section="catalogo">🛢️ <span>Catálogo</span></button>
+        <button class="nav-link" data-section="veiculos">🏍️ <span>Veículos</span></button>
+        <button class="nav-link owner-only" data-section="vendas">💳 <span>Nova venda</span></button>
+        <button class="nav-link owner-only" data-section="notas">🧾 <span>Notas / Recibos</span></button>
+        <button class="nav-link owner-only" data-section="config">⚙️ <span>Configurações</span></button>
+      </nav>
+
+      <div class="hours-card">
+        <span class="eyebrow">HOJE</span>
+        <strong id="sidebarHours">Carregando...</strong>
+        <small id="sidebarDay">Horário da oficina</small>
+        <div class="status-line">
+          <i id="statusDot"></i>
+          <span id="statusText">Verificando...</span>
+        </div>
+      </div>
+
+      <div class="mascot-card">
+        <img src="./assets/mascote-most-muscular.png" alt="Mascote Stuart Motos">
+        <div>
+          <strong>Stuart Motos</strong>
+          <p>Oficina, peças, serviços e motos.</p>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-btn" id="menuBtn" aria-label="Abrir menu">☰</button>
+          <div>
+            <span class="eyebrow">PAINEL STUART MOTOS</span>
+            <h1 id="pageTitle">Visão geral</h1>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <button class="theme-toggle" id="themeToggle">☀️ Modo claro</button>
+          <div class="clock">
+            <span id="dateNow"></span>
+            <strong id="timeNow"></strong>
+          </div>
+          <button class="secondary small" id="changeAccessBtn">Trocar acesso</button>
+          <button class="secondary small owner-only" id="logoutBtn">Sair</button>
+        </div>
+      </header>
+
+      <section class="page active" id="inicio">
+        <div class="hero">
+          <div class="hero-copy">
+            <span class="pill">SUPABASE • OFICINA • ESTOQUE • VENDAS</span>
+            <h2>Stuart Motos agora conectada a um banco de dados de verdade.</h2>
+            <p id="heroRoleText">Consulte os dados públicos da oficina.</p>
+            <div class="hero-actions">
+              <button class="primary" data-go="catalogo">Ver catálogo</button>
+              <button class="secondary" data-go="veiculos">Ver motos</button>
+              <button class="secondary owner-only" data-go="vendas">Registrar venda</button>
+            </div>
+          </div>
+          <div class="hero-art">
+            <img src="./assets/mascote-duplo-biceps.png" alt="Mascote Stuart Motos">
+          </div>
+        </div>
+
+        <div class="stats">
+          <article class="stat-card">
+            <span>Produtos cadastrados</span>
+            <strong id="statProducts">0</strong>
+            <small>Catálogo da oficina</small>
+          </article>
+          <article class="stat-card">
+            <span>Unidades em estoque</span>
+            <strong id="statStock">0</strong>
+            <small>Quantidade disponível</small>
+          </article>
+          <article class="stat-card">
+            <span>Motos disponíveis</span>
+            <strong id="statVehicles">0</strong>
+            <small>Veículos publicados</small>
+          </article>
+          <article class="stat-card owner-only">
+            <span>Vendas registradas</span>
+            <strong id="statSales">0</strong>
+            <small>Histórico do banco</small>
+          </article>
+        </div>
+
+        <div class="grid-2">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <span class="eyebrow">FUNCIONAMENTO</span>
+                <h3>Horário da oficina</h3>
+              </div>
+              <span class="badge" id="openBadge">—</span>
+            </div>
+            <div class="schedule" id="publicSchedule"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <span class="eyebrow">DESTAQUES</span>
+                <h3 id="stockPanelTitle">Produtos disponíveis</h3>
+              </div>
+            </div>
+            <div class="alert-list" id="stockHighlights"></div>
+          </article>
+        </div>
+
+        <div class="mascot-strip">
+          <div>
+            <span class="eyebrow">IDENTIDADE DA OFICINA</span>
+            <h3>As artes do mascote fazem parte de toda a experiência.</h3>
+            <p>O site mantém o estilo preto, laranja e mecânico da Stuart Motos, agora com dados vindos do Supabase.</p>
+          </div>
+          <div class="mascot-gallery">
+            <img src="./assets/mascote-side-chest.png" alt="Mascote Stuart Motos">
+            <img src="./assets/mascote-most-muscular.png" alt="Mascote Stuart Motos">
+            <img src="./assets/mascote-classic-pose.png" alt="Mascote Stuart Motos">
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="catalogo">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">CATÁLOGO</span>
+            <h2>Produtos e estoque</h2>
+            <p id="catalogDescription">Consulte peças, lubrificantes e outros produtos.</p>
+          </div>
+          <button class="primary owner-only" id="newProductBtn">+ Cadastrar produto</button>
+        </div>
+
+        <div class="catalog-banner">
+          <img src="./assets/mascote-side-chest.png" alt="Mascote Stuart Motos">
+          <div>
+            <span class="eyebrow">ESTOQUE CONECTADO</span>
+            <h3>Os dados desta tela vêm diretamente do Supabase.</h3>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <input type="search" id="productSearch" placeholder="Buscar produto, marca, categoria ou SKU...">
+          <select id="productCategory">
+            <option value="">Todas as categorias</option>
+            <option>Óleo</option>
+            <option>Filtro</option>
+            <option>Freio</option>
+            <option>Pneu</option>
+            <option>Peça</option>
+            <option>Acessório</option>
+            <option>Outro</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Categoria</th>
+                <th>Marca</th>
+                <th>Preço</th>
+                <th>Qtd.</th>
+                <th>Status</th>
+                <th class="owner-only">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="productsTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="page" id="veiculos">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">VEÍCULOS</span>
+            <h2>Motos à venda</h2>
+            <p id="vehicleDescription">Consulte os veículos publicados pela Stuart Motos.</p>
+          </div>
+          <button class="primary owner-only" id="newVehicleBtn">+ Cadastrar veículo</button>
+        </div>
+
+        <div class="vehicle-banner">
+          <img src="./assets/mascote-classic-pose.png" alt="Mascote Stuart Motos">
+          <div>
+            <span class="eyebrow">VEÍCULOS</span>
+            <h3>Ficha completa e status sincronizado com o banco.</h3>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <input type="search" id="vehicleSearch" placeholder="Buscar marca, modelo, ano ou placa...">
+        </div>
+
+        <div class="vehicle-grid" id="vehicleGrid"></div>
+      </section>
+
+      <section class="page owner-only" id="vendas">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">VENDA / RECIBO</span>
+            <h2>Registrar venda</h2>
+            <p>A venda é gravada no PostgreSQL. Produtos, estoque, mão de obra e veículo são processados pelo banco.</p>
+          </div>
+        </div>
+
+        <form id="saleForm" class="sale-layout">
+          <article class="panel">
+            <div class="panel-head"><h3>Cliente</h3></div>
+            <div class="form-grid">
+              <label class="full">Nome / Razão social
+                <input name="customerName" required placeholder="Ex.: João da Silva">
+              </label>
+              <label>CPF / CNPJ
+                <input name="customerDoc" placeholder="000.000.000-00">
+              </label>
+              <label>Telefone
+                <input name="customerPhone" placeholder="(84) 99999-9999">
+              </label>
+              <label>Email
+                <input type="email" name="customerEmail" placeholder="cliente@email.com">
+              </label>
+              <label>Endereço
+                <input name="customerAddress" placeholder="Rua, número, bairro, cidade">
+              </label>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="service-block">
+              <h4>Produtos</h4>
+              <div class="form-grid">
+                <label class="full">Produto
+                  <select id="saleProduct"><option value="">Selecione um produto</option></select>
+                </label>
+                <label>Quantidade
+                  <input id="saleProductQty" type="number" min="1" value="1">
+                </label>
+                <label>&nbsp;
+                  <button class="secondary block" type="button" id="addSaleProductBtn">Adicionar produto</button>
+                </label>
+              </div>
+              <div class="sale-items" id="saleProductItems"></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="service-block">
+              <h4>Mão de obra / serviço</h4>
+              <div class="form-grid">
+                <label class="full">Descrição
+                  <input id="laborDescription" placeholder="Ex.: Revisão completa">
+                </label>
+                <label>Quantidade
+                  <input id="laborQty" type="number" min="1" value="1">
+                </label>
+                <label>Valor unitário
+                  <input id="laborPrice" type="number" min="0" step="0.01" placeholder="0,00">
+                </label>
+                <label class="full">
+                  <button class="secondary block" type="button" id="addLaborBtn">Adicionar mão de obra</button>
+                </label>
+              </div>
+              <div class="sale-items" id="saleLaborItems"></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <label>Veículo (opcional)
+              <select id="saleVehicle"><option value="">Nenhum veículo</option></select>
+            </label>
+          </article>
+
+          <article class="panel sale-summary">
+            <div class="panel-head"><h3>Resumo</h3></div>
+            <div class="summary-row"><span>Produtos</span><strong id="saleProductsSubtotal">R$ 0,00</strong></div>
+            <div class="summary-row"><span>Mão de obra</span><strong id="saleLaborSubtotal">R$ 0,00</strong></div>
+            <div class="summary-row"><span>Veículo</span><strong id="saleVehicleSubtotal">R$ 0,00</strong></div>
+            <div class="summary-row">
+              <span>Desconto</span>
+              <input id="saleDiscount" type="number" min="0" step="0.01" value="0">
+            </div>
+            <div class="summary-total"><span>Total estimado</span><strong id="saleTotal">R$ 0,00</strong></div>
+
+            <label>Forma de pagamento
+              <select name="payment">
+                <option>PIX</option>
+                <option>Dinheiro</option>
+                <option>Cartão de débito</option>
+                <option>Cartão de crédito</option>
+                <option>Financiamento</option>
+                <option>Outro</option>
+              </select>
+            </label>
+
+            <label>Observações
+              <textarea name="notes" rows="4" placeholder="Detalhes do serviço, garantia, observações..."></textarea>
+            </label>
+
+            <button class="primary block" type="submit" id="finishSaleBtn">Finalizar venda</button>
+            <small class="legal-note">O valor definitivo é calculado novamente pelo banco. O recibo gerado não substitui NF-e/NFC-e oficial.</small>
+          </article>
+        </form>
+      </section>
+
+      <section class="page owner-only" id="notas">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">HISTÓRICO</span>
+            <h2>Notas e recibos</h2>
+            <p>Os documentos abaixo são carregados do banco de dados.</p>
+          </div>
+          <button class="secondary" id="refreshInvoicesBtn">↻ Atualizar</button>
+        </div>
+        <div class="invoice-list" id="invoiceList"></div>
+      </section>
+
+      <section class="page owner-only" id="config">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">CONFIGURAÇÕES</span>
+            <h2>Horário da oficina</h2>
+            <p>As alterações são salvas no Supabase e ficam visíveis imediatamente para visitantes.</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <span class="eyebrow">FUNCIONAMENTO</span>
+                <h3>Editar horários</h3>
+              </div>
+            </div>
+            <form id="hoursForm">
+              <div class="hours-editor" id="hoursEditor"></div>
+              <button class="primary block" type="submit">Salvar horários</button>
+            </form>
+          </article>
+
+          <article class="panel admin-panel">
+            <img src="./assets/mascote-most-muscular.png" alt="Mascote Stuart Motos">
+            <div>
+              <span class="eyebrow">SEGURANÇA</span>
+              <h3>O banco confirma as permissões.</h3>
+              <p>Os botões administrativos ficam escondidos do visitante, mas a proteção principal está nas políticas RLS do Supabase.</p>
+              <div class="security-list">
+                <span>✓ Login por email e senha</span>
+                <span>✓ Sessão gerenciada pelo Supabase Auth</span>
+                <span>✓ RLS no PostgreSQL</span>
+                <span>✓ Sem service_role no navegador</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal" id="productModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow">PRODUTO</span>
+          <h3 id="productModalTitle">Cadastrar produto</h3>
+        </div>
+        <button class="icon-btn close-modal" type="button">✕</button>
+      </div>
+
+      <form class="form-grid" id="productForm">
+        <input type="hidden" name="id">
+        <label class="full">Nome
+          <input name="nome" required placeholder="Ex.: Óleo Motul 5100 10W40 1L">
+        </label>
+        <label>Categoria
+          <select name="categoria">
+            <option>Óleo</option><option>Filtro</option><option>Freio</option>
+            <option>Pneu</option><option>Peça</option><option>Acessório</option><option>Outro</option>
+          </select>
+        </label>
+        <label>Marca
+          <input name="marca" placeholder="Ex.: Motul">
+        </label>
+        <label>Preço
+          <input name="preco" type="number" min="0" step="0.01" required>
+        </label>
+        <label>Quantidade
+          <input name="quantidade" type="number" min="0" required>
+        </label>
+        <label>Estoque mínimo
+          <input name="estoque_minimo" type="number" min="0" value="3" required>
+        </label>
+        <label>SKU
+          <input name="sku" placeholder="OLEO-001">
+        </label>
+        <label class="switch-label full">
+          <input name="ativo" type="checkbox" checked>
+          Produto ativo / visível
+        </label>
+
+        <div class="modal-actions full">
+          <button class="secondary close-modal" type="button">Cancelar</button>
+          <button class="primary" type="submit">Salvar produto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="vehicleModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow">VEÍCULO</span>
+          <h3 id="vehicleModalTitle">Cadastrar veículo</h3>
+        </div>
+        <button class="icon-btn close-modal" type="button">✕</button>
+      </div>
+
+      <form class="form-grid" id="vehicleForm">
+        <input type="hidden" name="id">
+        <label>Marca<input name="marca" required placeholder="Honda"></label>
+        <label>Modelo<input name="modelo" required placeholder="CG 160 Titan"></label>
+        <label>Ano<input name="ano" type="number" min="1950" max="2100" required></label>
+        <label>Cor<input name="cor" placeholder="Vermelha"></label>
+        <label>Quilometragem<input name="quilometragem" type="number" min="0" required></label>
+        <label>Preço<input name="preco" type="number" min="0" step="0.01" required></label>
+        <label>Placa<input name="placa" placeholder="ABC1D23"></label>
+        <label>RENAVAM<input name="renavam" placeholder="Opcional"></label>
+        <label class="full">Observações
+          <textarea name="observacoes" rows="3"></textarea>
+        </label>
+        <label class="switch-label">
+          <input name="publicado" type="checkbox" checked>
+          Publicado
+        </label>
+        <label class="switch-label">
+          <input name="vendido" type="checkbox">
+          Vendido
+        </label>
+
+        <div class="modal-actions full">
+          <button class="secondary close-modal" type="button">Cancelar</button>
+          <button class="primary" type="submit">Salvar veículo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script>
+  <script src="./supabase-client.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
