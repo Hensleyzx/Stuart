@@ -164,9 +164,10 @@ $("#showOwnerLoginBtn").addEventListener("click", ()=>{
 
 $("#ownerLoginForm").addEventListener("submit", async event=>{
   event.preventDefault();
+  const formEl = event.currentTarget;
   $("#loginMessage").textContent = "Entrando...";
 
-  const form = new FormData(event.currentTarget);
+  const form = new FormData(formEl);
   const email = form.get("email").trim();
   const password = form.get("password");
 
@@ -184,7 +185,7 @@ $("#ownerLoginForm").addEventListener("submit", async event=>{
       return;
     }
 
-    event.currentTarget.reset();
+    formEl.reset();
     $("#loginMessage").textContent = "";
     setRole("owner");
     showApp();
@@ -863,6 +864,7 @@ function updateSaleTotals(){
 
 $("#saleForm").addEventListener("submit", async event=>{
   event.preventDefault();
+  const formEl = event.currentTarget;
 
   const totals = getSaleTotals();
   if(!saleProducts.length && !saleLabor.length && !totals.vehicle){
@@ -904,7 +906,7 @@ $("#saleForm").addEventListener("submit", async event=>{
 
   if(error) return toast(friendlyError(error));
 
-  event.currentTarget.reset();
+  formEl.reset();
   $("#saleDiscount").value = 0;
   saleProducts = [];
   saleLabor = [];
