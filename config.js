@@ -9,6 +9,6 @@
 */
 
 window.STUART_CONFIG = {
-  supabaseUrl: "https://fyzviqiczdveflvvyghq.supabase.co",
-  supabasePublishableKey: "sb_publishable_TXDhbkdcoRvXmbqTr3Pl3g_X0CM9L2E"
+  supabaseUrl: "https://vwjcktepdxjfkzbdpfnr.supabase.co",
+  supabasePublishableKey: "sb_publishable_2nmUu6bgmBIxNLolphCssQ__uhIptsT"
 };
