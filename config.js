@@ -1,18 +1,10 @@
 /*
-  STUART MOTOS - CONFIGURAÇÃO DO SUPABASE
+  STUART MOTOS — configuração pública do Supabase.
+  A Publishable Key pode ficar no frontend quando o banco está protegido por RLS.
 
-  1) Supabase Dashboard > Project Settings / API
-  2) Copie:
-     - Project URL
-     - Publishable Key (ou anon key em projetos antigos)
-  3) Cole abaixo.
-
-  É NORMAL a Publishable Key ficar no frontend.
-  A segurança real deve estar nas políticas RLS do banco.
-
-  NUNCA coloque aqui:
+  NUNCA coloque neste arquivo:
   - service_role
-  - secret key
+  - Secret Key
   - senha do banco
 */
 
