@@ -13,6 +13,28 @@ window.STUART_CONFIG = {
   supabasePublishableKey: "sb_publishable_2nmUu6bgmBIxNLolphCssQ__uhIptsT"
 };
 
+/* Ícone da aba do navegador (favicon) */
+(() => {
+  const iconHref = "./assets/logo-stuart-motos.png";
+
+  let favicon = document.querySelector('link[rel="icon"]');
+  if (!favicon) {
+    favicon = document.createElement("link");
+    favicon.rel = "icon";
+    favicon.type = "image/png";
+    document.head.appendChild(favicon);
+  }
+  favicon.href = iconHref;
+
+  let appleIcon = document.querySelector('link[rel="apple-touch-icon"]');
+  if (!appleIcon) {
+    appleIcon = document.createElement("link");
+    appleIcon.rel = "apple-touch-icon";
+    document.head.appendChild(appleIcon);
+  }
+  appleIcon.href = iconHref;
+})();
+
 /* Contatos públicos oficiais da Stuart Motos */
 window.STUART_CONTACT = {
   phone: "+55 84 92146-0863",
