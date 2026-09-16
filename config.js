@@ -19,7 +19,8 @@ window.STUART_CONTACT = {
   whatsapp: "5584921460863",
   email: "stuarttmotos@gmail.com",
   instagram: "https://www.instagram.com/stuartmotos/",
-  instagramHandle: "@stuartmotos"
+  instagramHandle: "@stuartmotos",
+  address: "Rua Francisco Das Chagas Do Carmo, nº 20 — Mossoró/RN"
 };
 
 /*
@@ -42,6 +43,16 @@ window.STUART_CONTACT = {
     if (el.getAttribute("href") !== href) el.setAttribute("href", href);
     if (el.getAttribute("target") !== "_blank") el.setAttribute("target", "_blank");
     if (el.getAttribute("rel") !== "noopener") el.setAttribute("rel", "noopener");
+  }
+
+  function fillAdminContactFields() {
+    const phone = document.querySelector('#siteSettingsForm [name="telefone"]');
+    const whatsapp = document.querySelector('#siteSettingsForm [name="whatsapp"]');
+    const address = document.querySelector('#siteSettingsForm [name="endereco"]');
+
+    if (phone && !phone.value.trim()) phone.value = contact.phone;
+    if (whatsapp && !whatsapp.value.trim()) whatsapp.value = contact.whatsapp;
+    if (address && !address.value.trim()) address.value = contact.address;
   }
 
   function addContactCards() {
@@ -94,6 +105,7 @@ window.STUART_CONTACT = {
 
   function applyOfficialContacts() {
     setText("#contactPhone", contact.phone);
+    setText("#contactAddress", contact.address);
     setText("#publicPhoneTop", contact.phone);
 
     setLink("#publicWhatsappTop", whatsappHref);
@@ -101,6 +113,7 @@ window.STUART_CONTACT = {
     setLink("#heroWhatsapp", whatsappHref);
     setLink("#contactWhatsapp", whatsappHref);
 
+    fillAdminContactFields();
     addContactCards();
     addFooterLinks();
   }
