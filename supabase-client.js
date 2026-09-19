@@ -33,7 +33,7 @@
   window.addEventListener("DOMContentLoaded", () => {
     if (document.querySelector('script[data-stuart-mfa="true"]')) return;
     const script = document.createElement("script");
-    script.src = "./mfa.js";
+    script.src = "./mfa-v2.js";
     script.defer = true;
     script.dataset.stuartMfa = "true";
     document.body.appendChild(script);
