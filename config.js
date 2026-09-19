@@ -12,7 +12,8 @@
 window.STUART_CONFIG = {
   supabaseUrl: "https://vwjcktepdxjfkzbdpfnr.supabase.co",
   supabasePublishableKey: "sb_publishable_2nmUu6bgmBIxNLolphCssQ__uhIptsT",
-  turnstileSiteKey: "0x4AAAAAAE8_XjIhLg_IOUIw"
+  turnstileSiteKey: "0x4AAAAAAE8_XjIhLg_IOUlw",
+  ownerInactivityMinutes: 30
 };
 
 /* Ícone da aba do navegador (favicon) */
@@ -56,6 +57,7 @@ window.STUART_CONFIG = {
     try {
       await loadScript("./mfa-v2.js");
       await loadScript("./turnstile-login.js");
+      await loadScript("./session-security.js");
     } catch (error) {
       console.error("[Stuart Security]", error);
     }
