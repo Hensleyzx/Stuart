@@ -13,6 +13,24 @@
     return;
   }
 
+  /*
+    Segurança da sessão do proprietário:
+    - usa sessionStorage em vez de localStorage;
+    - mantém a sessão durante recargas da mesma aba;
+    - evita deixar o login persistido indefinidamente no computador.
+  */
+  const projectRef = "vwjcktepdxjfkzbdpfnr";
+  const oldStoragePrefix = `sb-${projectRef}-auth-token`;
+
+  try {
+    for (let i = localStorage.length - 1; i >= 0; i -= 1) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(oldStoragePrefix)) localStorage.removeItem(key);
+    }
+  } catch (error) {
+    console.warn("[Stuart Security] Não foi possível limpar sessão antiga persistente.", error);
+  }
+
   window.stuartDb = window.supabase.createClient(
     cfg.supabaseUrl,
     cfg.supabasePublishableKey,
@@ -20,22 +38,11 @@
       auth: {
         persistSession: true,
         autoRefreshToken: true,
-        detectSessionInUrl: true
+        detectSessionInUrl: true,
+        storage: window.sessionStorage,
+        storageKey: "stuart-owner-auth"
       },
       db: { schema: "public" }
     }
   );
-
-  /*
-    A camada MFA precisa executar depois de app.js, pois ela envolve a
-    função showAdmin para impedir a abertura do painel sem AAL2.
-  */
-  window.addEventListener("DOMContentLoaded", () => {
-    if (document.querySelector('script[data-stuart-mfa="true"]')) return;
-    const script = document.createElement("script");
-    script.src = "./mfa-v2.js";
-    script.defer = true;
-    script.dataset.stuartMfa = "true";
-    document.body.appendChild(script);
-  }, { once: true });
 })();
