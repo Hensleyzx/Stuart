@@ -1,16 +1,18 @@
 /*
   STUART MOTOS — configuração pública do Supabase.
-  A Publishable Key pode ficar no frontend quando o banco está protegido por RLS.
+  A Publishable Key e a Site Key do Turnstile podem ficar no frontend.
 
   NUNCA coloque neste arquivo:
   - service_role
-  - Secret Key
+  - Secret Key do Supabase
+  - Secret Key do Turnstile
   - senha do banco
 */
 
 window.STUART_CONFIG = {
   supabaseUrl: "https://vwjcktepdxjfkzbdpfnr.supabase.co",
-  supabasePublishableKey: "sb_publishable_2nmUu6bgmBIxNLolphCssQ__uhIptsT"
+  supabasePublishableKey: "sb_publishable_2nmUu6bgmBIxNLolphCssQ__uhIptsT",
+  turnstileSiteKey: "0x4AAAAAAE8_XjIhLg_IOUIw"
 };
 
 /* Ícone da aba do navegador (favicon) */
@@ -33,6 +35,37 @@ window.STUART_CONFIG = {
     document.head.appendChild(appleIcon);
   }
   appleIcon.href = iconHref;
+})();
+
+/* Carrega as proteções do painel depois que app.js já estiver disponível. */
+(() => {
+  async function loadScript(src) {
+    if (document.querySelector(`script[data-stuart-security="${src}"]`)) return;
+    await new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.async = false;
+      script.dataset.stuartSecurity = src;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error(`Falha ao carregar ${src}`));
+      document.body.appendChild(script);
+    });
+  }
+
+  async function loadSecurity() {
+    try {
+      await loadScript("./mfa-v2.js");
+      await loadScript("./turnstile-login.js");
+    } catch (error) {
+      console.error("[Stuart Security]", error);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadSecurity, { once: true });
+  } else {
+    loadSecurity();
+  }
 })();
 
 /* Contatos públicos oficiais da Stuart Motos */
