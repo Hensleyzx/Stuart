@@ -2,8 +2,7 @@
 (() => {
   "use strict";
 
-  const cfg = window.STUART_CONFIG || {};
-  const siteKey = cfg.turnstileSiteKey;
+  const siteKey = "0x4AAAAAAE8_XjIhLg_IOUlw";
   if (!siteKey) {
     console.warn("[Stuart Turnstile] Site Key não configurada.");
     return;
