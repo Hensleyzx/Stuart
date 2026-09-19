@@ -25,4 +25,17 @@
       db: { schema: "public" }
     }
   );
+
+  /*
+    A camada MFA precisa executar depois de app.js, pois ela envolve a
+    função showAdmin para impedir a abertura do painel sem AAL2.
+  */
+  window.addEventListener("DOMContentLoaded", () => {
+    if (document.querySelector('script[data-stuart-mfa="true"]')) return;
+    const script = document.createElement("script");
+    script.src = "./mfa.js";
+    script.defer = true;
+    script.dataset.stuartMfa = "true";
+    document.body.appendChild(script);
+  }, { once: true });
 })();
